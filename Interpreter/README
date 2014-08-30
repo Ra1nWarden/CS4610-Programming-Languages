@@ -1,0 +1,32 @@
+Zihao Wang
+zw2rf@virginia.edu
+README for Programming Assignment 5 The Interpreter
+
+For the compiler warnings:
+There are many compiler warnings for my code. They are all about non-exhaustive matching statements and unused variables. I did not spend much time fixing those as I focus more on debugging and finding out corner cases. If I had more time, I would defintely fix those. 
+
+Discussion of design decisions
+I wrote this assignment in OCaml. Just like what I did for the semantics analyzer, I created algebraic data types to represent classes, methods, variables and expressions in COOL. First of all, I parsed inputs from the .cl-type file using functions that are similar to PA4 (in OCaml though). The new types are "variable" which is just a string value, "location", which is just an integer value, "field" which contains a string and a location and finally "value" whcih represents COOL values. It can be of basic types, objects and null values.
+Specifically for PA5, we need a environment and a store which are both maps in my program. In order for newloc() to work, I created a global variable that increments every time it is retrieved. Another global variable is the stack counter which track the number of activation records on the stack.
+After that, I translated operational semantics rules specified in the manual into code. Here are some significant rules:
+1. new expression
+Firstly, the stack counter is incremented to check stack overflow errors. After that, the list of fields of that specific class is retrieved from the class map. For each field, allocate new space by retrieving value from the global counter. Set them to default values. After that, recursively call the initialization expression and assigned that value to the field's location in the store. Before returning, the stack counter is decremented.
+2. dispatches
+Dynamic dispatch/static dispatch/self dispatch have similar behaviors. Firstly, according to the operating semantics rule, the list of arguments are recursively evaluated and the store is updated with these values. After that, the caller is evaluated. In order to query the implementation map to find the correct implementation, we need to get the type of the caller. For dynamic dispatch, the dynamic type is returned. For static dispatch, the casted type is returned. Self dispatches return self object. After that, create a subenvironment that has locations for fields of that class and the arguments. Finally, the body of the method is evaluated with self object being the caller, the newly created subenvironment and the updated store.
+3. let expressions
+Let expressions have a list of bindings. That list is evaluated in order. For each binding, the new variable is added to the environment. If there is no initialization, default values are added to the store. Otherwise, the initialization is evaluated and added to the store. The body is only evaluated after all bindings are done.
+4. case expression
+First of all, the expression being cased on is evaluated. The type of this expression is compared with the lists of types from the case branches. From the parent map, I built an inheritance tree that is queried when determining least common ancestor in case expression. For the specific type found to be the target branch, the variable of the case expression is added to the environment with the store updated with the original value. Finally, that body expression from the branch is evaluated with the new maps.
+5. internal expression
+This is a new type of expression in PA5. To handle these, I hard coded how every method is supposed to behave in OCaml. Some tricky parts are reading integers with leading spaces and ignoring characters after the first non-digit. Also, COOL has 32 bit signed integers so checked the value read before returning. Finally, copy() is the hardest part. My implementation was allocating new locations for each field for the type being copied. It is similar to a new expression. However, all locations are initialized to the original values of the object being copied.
+
+Choice of test cases
+PA5 is a huge project and I tested my program with the following principles:
+1. 32 bit integer
+COOL has 32 bit integer so all arithmetic operations are done within 32 bit integer. Hence, I have tried multiplication, addition with 2147483647 to make sure that they are done with 32 bit integers.
+2. copy vs assignment
+Shallow copy and assignments are very tricky so I have created test cases with copy and assignment operations on basic and non-basic types. These copies are then tested by comparing their fields, addresses and values.
+3. comparison between objects
+Comparison between objects are based on addresses so I also make sure my interpreter works by testing with comparison between shallow copies, uninitialized fields, assigned objects, etc.
+4. stack over flow
+Finally, to make sure that my program reports the right line number for 1000 and more activation records. I have created test cases with infinite new and dispatches and compare error line numbers between my interpreter with the reference one.
