@@ -1,0 +1,111 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{mathpartir}
+\usepackage{listings}
+\usepackage{tikz-qtree,tikz-qtree-compat}
+\usepackage{tikz}
+\pagestyle{fancy}
+\lhead{CS 4610 Written Assignment 5}
+\rhead{Zihao Wang (zw2rf)}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\thesubsection}{\alph{subsection}.}
+\lstset {
+	language=C++,
+	frame=single,
+	numbers=left,
+	backgroundcolor=\color{white}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\title{CS 4610 Written Assignment 5}
+\author{Zihao Wang (zw2rf)}
+\date{\today}
+\maketitle
+\doublespacing
+
+\section{Draw the tree of activation records for a call to \lstinline|fact(4)|}
+\begin{center}
+\Tree [.fact(4) [.fact(3) [.fact(2) [.fact(1) [.fact(0) ] ] ] ] ]
+\end{center}
+
+\section{Use these rules to construct a derivation for the following piece of code}
+$$
+\inferrule*
+	{\inferrule*
+		{ }
+		{so, E, S \vdash 2 \text{ : Int} (2), S}
+	\qquad
+	\inferrule*
+		{\inferrule*
+			{\inferrule*
+				{so, E, S \vdash 1 : \text{Int}(1), S_{1} \\\\
+				 so, E, S_{1} \vdash x : \text{Int}(x), S_{2}}
+				{so, E, S \vdash 1 < x : v, S_{2}} 
+			}
+			{so, E, S \vdash e_{1} : \text{ Bool(true)}, S_{2}}
+		 \qquad
+		 \inferrule*
+		 	{\inferrule*
+				{so, E, S \vdash x-1 : v_{1}, S_{1}}
+				{so, E, S_{1} \vdash x \leftarrow x-1:v_{2}, S_{2}}
+			}
+			{so, E, S \vdash e_{2} : v_{2}, S_{2} }
+		}
+		{so, E[l_{new}/x], S[Int(2)/l_{new}] \vdash \text{while } 1 < x \text{ loop } x \leftarrow x -1 \text{ pool : } void, S_{final}}
+	}
+	{so, E, S \vdash \text{let x : Int} \leftarrow 2 \text{ in while } 1 < x \text{ loop } x \leftarrow x - 1 \text{ pool : } void, S_{final}}
+$$
+
+\section{Write the operational semantics for these three syntactic constructs}
+$$
+\inferrule*
+	{so, E, S \vdash e_{1} : Int(n_{1}), S_{1} \\\\
+	l_{new} = newloc(S_{1}) \\\\
+	so, E[l_{new}/a], S_{1}[v_{1}/l_{new}] \vdash e_{2} : v_{2}, S_{2}}
+	{so, E, S \vdash let \text{ } a : T[e_{1}] \text{ }in \text{ } e_{2} : v_{2}, S_{2}}
+$$
+$$
+\inferrule*
+	{so, E, S \vdash e_{1} : Int(n_{1}), S \\\\
+	 so, E, S \vdash e_{2} : v_{1}, S_{1} \\\\
+	 E(a[e_{1}]) = l_{1}  \quad
+	 S_{1}[v_{1}/l_{1}] = S_{2}
+	}
+	{so, E, S \vdash a[e_{1}] \leftarrow e_{2}: v_{1}, S_{2}}
+$$
+$$
+\inferrule*
+	{so, E, S \vdash e : Int(n), S_{1}}
+	{so, E, S \vdash a[e]: v, S_{1}}
+$$
+
+\section{Write new operational rules for the while construct that formalize the new native semantics.}
+$$
+\inferrule*
+	{so, S_{1}, E \vdash e_{1} : Bool(true), S_{2} \\\\
+	so, S_{2}, E \vdash e_{2}: v_{2}, S_{3} \\\\
+	so, S_{3}, E \vdash while \text{ } e_{1} \text{ } loop \text{ } e_{2} \text{ } pool : v_{2}, S_{4}
+	}
+	{so, S_{1}, E \vdash while \text{ } e_{1} \text{ } loop \text{ } e_{2} \text{ } pool : v_{2}, S_{4}}
+$$
+$$
+\inferrule*
+	{so, S_{1}, E \vdash e_{1} : Bool(true), S_{2} \\\\
+	so, S_{2}, E \vdash e_{2}: v_{2}, S_{3} \\\\
+	so, S_{3}, E \vdash while \text{ } e_{1} \text{ } loop \text{ } e_{2} \text{ } pool : void, S_{4}
+	}
+	{so, S_{1}, E \vdash while \text{ } e_{1} \text{ } loop \text{ } e_{2} \text{ } pool : v_{2}, S_{4}}
+$$
+$$
+\inferrule*
+	{so, S_{1}, E \vdash e_{1} : Bool(false), S_{2}}
+	{so, S_{1}, E \vdash while \text{ } e_{1} \text{ } loop \text{ } e_{2} \text{ } pool : void, S_{2}}
+$$
+
+\end{document}

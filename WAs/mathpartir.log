@@ -1,0 +1,46 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=latex 2013.11.5)  30 MAR 2014 23:01
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**mathpartir.sty
+(./mathpartir.sty
+LaTeX2e <2011/06/27>
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
+
+LaTeX Warning: You have requested package `',
+               but the package provides `mathpartir'.
+
+Package: mathpartir 2005/12/20 version 1.2.0 Math Paragraph for Typesetting Inf
+erence Rules
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.43 \let \mpr@t
+                mpdim \@tempdima
+? 
+! Emergency stop.
+ ...                                              
+                                                  
+l.43 \let \mpr@t
+                mpdim \@tempdima
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ 
+Here is how much of TeX's memory you used:
+ 36 strings out of 493316
+ 690 string characters out of 6137930
+ 52155 words of memory out of 5000000
+ 3582 multiletter control sequences out of 15000+600000
+ 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 16i,0n,17p,100b,14s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.

@@ -1,0 +1,119 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{pdflscape}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tikz-qtree,tikz-qtree-compat}
+
+\usepackage{tikz}
+\pagestyle{fancy}
+\lhead{CS 4610 Written Assignment 3}
+\rhead{Zihao Wang (zw2rf)}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\thesubsection}{\alph{subsection}.}
+\begin{document}
+\thispagestyle{empty}
+\title{CS 4610 Written Assignment 3}
+\author{Zihao Wang (zw2rf)}
+\date{\today}
+\maketitle
+\doublespacing
+
+\section{Convert the following grammars into $LL(1)$ grammars.}
+\subsection{}
+$$E \rightarrow TP$$
+$$P \rightarrow \epsilon \mid +TP \mid !P$$
+$$T \rightarrow int \mid (E)$$
+
+\subsection{}
+$$L \rightarrow XP$$
+$$P \rightarrow \epsilon \mid ,XP$$
+$$X \rightarrow int \mid string \mid (L)$$
+
+\subsection{}
+$$P \rightarrow p G$$
+$$G \rightarrow \epsilon \mid H 4 U G$$
+$$H \rightarrow h$$
+$$U \rightarrow uQ$$
+$$Q \rightarrow \epsilon \mid P$$
+
+\begin{landscape}
+\section{}
+$$y + + + y + + +$$
+\begin{center}
+\begin{tabular}{ | c | c | c | c | c | }
+\hline
+chart[0] & chart[1] & chart[2] & chart[3] & chart[4]   \\
+\hline
+$S \rightarrow \bullet A$, 0 & $B \rightarrow y \bullet $, 0 &  $A \rightarrow B + \bullet +$, 0 & $A \rightarrow B + + \bullet $, 0 & $A \rightarrow B +++ \bullet A$, 0 
+\\
+\hline
+$A \rightarrow \bullet B++$, 0 & $A \rightarrow B \bullet ++$, 0 & $A \rightarrow B + \bullet ++A$, 0 & $A \rightarrow B ++ \bullet +A$, 0 & $A \rightarrow \bullet B++$, 4
+\\
+\hline
+$A \rightarrow \bullet A + A$, 0 & $A \rightarrow B \bullet +++A$, 0 && $S \rightarrow \bullet A$, 0 & $B \rightarrow \bullet y$, 4
+\\
+\hline
+$B \rightarrow \bullet y$, 0 & & & $A \rightarrow \bullet B++$, 3 &
+\\
+\hline
+$A \rightarrow \bullet B+++A$, 0 &&& $B \rightarrow \bullet y$, 3 & 
+\\
+\hline
+
+\end{tabular}
+
+\vspace{10 mm}
+
+\begin{tabular}{ | c | c | c | c | c | }
+\hline
+chart[5] & chart[6] & chart[7] & chart[8]  \\
+\hline
+$B \rightarrow y \bullet $, 4&$A \rightarrow B +\bullet +$, 4 &$A \rightarrow B ++\bullet $, 4  &  $A \rightarrow A + \bullet A$, 0
+\\
+\hline
+$A \rightarrow B \bullet ++$, 4& & $A \rightarrow B +++ A \bullet $, 0  & 
+\\
+\hline
+& &  $S \rightarrow A \bullet $, 0 &  
+\\
+\hline
+& &  $A \rightarrow A \bullet + A$, 0&  
+\\
+\hline
+
+\end{tabular}
+
+\vspace{10 mm}
+
+There are more states to be added into the table as the grammar $A \rightarrow A + A$ is left recursive. However, if more recursions are added to the table, we will only have more tokens which would not lead to the acceptance of the string. \\ 
+Therefore, these grammars do not accept the string $y+++y+++$
+
+\end{center}
+\end{landscape}
+
+\section{Explain in English prose how you would modify an Earley recognizer into a full-fledged parser that executes user actions.}
+In order to make a Earley recognizer work as a fully fledged parser, we need information such as line numbers and lexeme for every terminal. For non-terminals, we need to keep track of the identify of that non-terminal. Usually, we have non-terminals representing some important features of a language. For example, in languages such as COOL, we have non-terminals representing each class and method. With these information, we can better group the grammar rules for the users. \\
+As for data structures, a dictionary will suffice for a grammar rule. Each field such as line number, arguments for a methods are separate entries in this dictionary. A huge table for the Earley parsing algorithm takes too much memory. We can keep a queue instead. For every token read, we do a shift by keeping those rules for which we can do a shift operation. For every closure, we need to record the original rule as a field in the new rule to prepare for reduction. Line numbers are also sent in a closure. In a reduction operation, all the information about the original rule is sent to the reduced rule. User actions are executed every time a grammar rule is reduced. 
+
+\section{Consider an Earley parser with the closure operation removed:}
+
+\subsection{Give a grammar $G_{1}$ and a string $S_{1}$ such that $S_{1} \in L(G_{1})$ but this parser fails to recognize it.}
+$G_{1}$:
+$$S \rightarrow Ab$$
+$$A \rightarrow a$$
+$S_{1}$:
+$$ab$$
+This grammar fails to reognize the string as the starting rule has other non-terminals in it.
+
+\subsection{Give a grammar $G_{2}$ and a string $S_{2}$ such that $S_{2} \in L(G_{2})$ but this parser still successfully recognizes it.}
+$G_{2}$:
+$$S \rightarrow ab$$
+$S_{2}$:
+$$ab$$
+This grammar recognizes the string as the starting has all terminals in it. 
+\end{document}

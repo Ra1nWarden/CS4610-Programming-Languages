@@ -1,0 +1,14 @@
+cLass
+True
+tRue
+true
+iF
+Fi
+LOOP
+FI
+LET
+Else
+False
+faLse
++-*/@<-=>
+@~+-*/{}();:,<-=>.<<==

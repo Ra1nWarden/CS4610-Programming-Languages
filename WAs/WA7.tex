@@ -1,0 +1,80 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{mathpartir}
+\usepackage{listings}
+\usepackage{tikz-qtree,tikz-qtree-compat}
+\usepackage{tikz}
+\pagestyle{fancy}
+\lhead{CS 4610 Written Assignment 7}
+\rhead{Zihao Wang (zw2rf)}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\thesubsection}{\alph{subsection}.}
+\lstset {
+	language=C++,
+	frame=single,
+	numbers=none,
+	backgroundcolor=\color{white}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\title{CS 4610 Written Assignment 7}
+\author{Zihao Wang (zw2rf)}
+\date{\today}
+\maketitle
+\doublespacing
+
+\section{Consider Stop \& Copy vs. Mark \& Sweep garbage collection}
+
+\subsection{Is one of these two GC algorithms 'faster' than the other? Which algorithm needs to be run more frequently?}
+Stop \& Copy algorithm is faster than Mark \& Sweep algorithm. Stop \& Copy needs to be run more frequently as the memory is divided into two equal segments. Stop \& Copy is called when half of the memory is filled up while Mark \& Sweep is run when the whole memory is filled up.
+
+\subsection{Does either algorithm use strictly more memory than the other?}
+Yes, Mark \& Sweep uses strictly more memory than Stop \& Copy due to the mark bits.
+
+\subsection{Are reference cycles common in everyday data structures?}
+Normally, reference cycles are not common in everyday data structures.
+
+\subsection{Briefly describe how one might implement a cycle detector. When can a cycle be cleaned?}
+To implement a cycle detector, we can use a tracing algorithm starting from directly reachable references and mark all the references that are reachable. The unmarked ones with reference count more than 0 are included in a reference cycle. This is similar to the mark phase of Mark \& Sweep. It should be called periodically. 
+
+\section{Suppose we want to add a new construct to the language: \lstinline|protect e|}
+
+\subsection{Give the new type rules for \lstinline|protect|, \lstinline|try/catch| and \lstinline|throw|}
+\lstinline|throw|
+$$
+\inferrule*
+	{O, M, C \vdash e : T_{1}, E_{1}}
+	{O, M, C \vdash throw \text{ } e : T_{2}, true}
+$$
+\lstinline|try/catch|
+$$
+\inferrule*
+	{O, M, C \vdash e_{0} : T_{0}, E \qquad O\left[ Object/ x \right],M, C \vdash e_{1} : T_{1}, E'}
+	{O, M, C \vdash try \text{ } e_{0} \text{ } catch \text{ } x : Object \Rightarrow e_{1} : T_{0} \sqcup T_{1}, false}
+$$
+\lstinline|protect|
+$$
+\inferrule*
+	{O, M, C \vdash e : T, false}
+	{O, M, C \vdash protect \text{ } e : T, false}
+$$
+
+\subsection{Give a code sample that illustrates that the typing system described here is not necessarily safe.}
+\begin{lstlisting}
+protect {
+	try {
+		throw e
+	} catch x {
+		throw e
+	}
+}
+\end{lstlisting}
+This codes passes the type check as the \lstinline|try/catch| block returns false since it catches all types of exceptions. Therefore, throwing an exception in the \lstinline|catch| blocks fools the compiler to type check the program. 
+
+\end{document}
