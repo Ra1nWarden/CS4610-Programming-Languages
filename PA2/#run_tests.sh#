@@ -1,7 +1,0 @@
-#!/bin/sh
-
-for i in `ls cool-examples/*.cl`
-do
-python main.py $i
-./cool --out $i
-done
